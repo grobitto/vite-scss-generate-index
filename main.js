@@ -4,7 +4,7 @@ import chokidar from "chokidar";
 
 const setupAutoindex = (file, singleQuotes) => {
   const root = path.dirname(file);
-  generateIndexFile(root, false);
+  generateIndexFile(root, false, singleQuotes);
   let watcher = chokidar.watch(root, {
     ignored: /(^|[\/\\])\../, // ignore dotfiles
     persistent: true,
@@ -17,14 +17,14 @@ const setupAutoindex = (file, singleQuotes) => {
     }
     const dir = path.dirname(file);
     if (dir !== root) {
-      generateIndexFile(dir, true);
+      generateIndexFile(dir, true, singleQuotes);
     }
   };
   // Add event listeners.
   watcher.on("add", action).on("unlink", action);
 };
 
-const generateIndexFile = (directoryPath, generate) => {
+const generateIndexFile = (directoryPath, generate, singleQuotes) => {
   fs.readdir(directoryPath, (err, files) => {
     if (err) {
       console.error("Error reading directory:", err);
@@ -72,7 +72,7 @@ const generateIndexFile = (directoryPath, generate) => {
       }
       // Recursively process directories
       if (stats.isDirectory()) {
-        generateIndexFile(filePath, true);
+        generateIndexFile(filePath, true, singleQuotes);
       }
     });
     if (generate && (changed || lines.length > 0)) {
