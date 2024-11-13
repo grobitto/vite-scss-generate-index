@@ -1,6 +1,6 @@
 {
   "name": "@inlite/vite-scss-generate-index",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Vite plugin to generate _index.scss files automatically",
   "type": "module",
   "module": "main.js",

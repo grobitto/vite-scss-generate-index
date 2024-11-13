@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import chokidar from "chokidar";
 
-const setupAutoindex = (file) => {
+const setupAutoindex = (file, singleQuotes) => {
   const root = path.dirname(file);
   generateIndexFile(root, false);
   let watcher = chokidar.watch(root, {
@@ -60,13 +60,13 @@ const generateIndexFile = (directoryPath, generate) => {
       }
 
       if (generate) {
-        const importFile = `"${file}"`;
+        const importFile = singleQuotes?`'${file}'`:`"${file}"`;
         const line = lines.find((line) => line.includes(importFile));
         const idx = lines.indexOf(line);
         if (idx != -1) {
           lines.splice(idx, 1);
         } else {
-          result.push(`@import "${file}";`);
+          result.push(`@import ${importFile};`);
           changed = true;
         }
       }
@@ -95,7 +95,7 @@ export default function scssAutoindexPlugin(params) {
     },
     resolveId(source) {
       if (source.endsWith(".scss")) {
-        setupAutoindex(path.join(root, source));
+        setupAutoindex(path.join(root, source), params.singleQuotes || false);
       }
       return null;
     },
